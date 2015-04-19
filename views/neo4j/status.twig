@@ -1,0 +1,33 @@
+{% extends "layout.twig" %}
+{% block header %}
+    <h1 class="text-center">NEO4J - Nodes &amp; Relationships</h1>
+    <hr/>
+
+{% endblock %}
+
+{% block content %}
+    <div class="col-sm-8 col-sm-offset-2">
+        <table width="90%">
+            <tr>
+                <th width="33%">This</th>
+                <th width=33%">To</th>
+                <th with="34%">That</th>
+            </tr>
+            <tr>
+            {% for c in results.column %}
+                <th>{{ c }}</th>
+            {% endfor %}
+            </tr>
+
+            {% for d in results.data %}
+                <tr>
+                {% for r in d.row %}
+                    <td>{{ r }}</td>
+                {% endfor%}
+                </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+{% endblock %}
+
