@@ -27,6 +27,32 @@ $app->group('/events', function() use ($app){
 });
 
 
+$app->group('/neo4j', function() use ($app){
+
+    $app->get('/','\PhpBelfast\Controllers\GraphDBController:index')
+        ->name('neo.index');
+
+    $app->get('/places','\PhpBelfast\Controllers\GraphDBController:places')
+        ->name('neo.places');
+
+    $app->get('/people','\PhpBelfast\Controllers\GraphDBController:people')
+        ->name('neo.people');
+
+    $app->get('/peopltoplaces','\PhpBelfast\Controllers\GraphDBController:peopletoplaces')
+        ->name('neo.peopleplaces');
+
+    $app->get('/relatepeople','\PhpBelfast\Controllers\GraphDBController:relatepeople')
+        ->name('neo.relatepeople');
+
+
+    $app->get('/people/:name','\PhpBelfast\Controllers\GraphDBController:person')
+        ->name('neo.person');
+
+});
+
+
+
+
 $app->group('/url', function() use ($app){
 
     $app->get('/', '\PhpBelfast\Controllers\UrlController:index')

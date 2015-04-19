@@ -28,6 +28,18 @@
                         <li><a href="{{ urlFor('url.show') }}">Show</a></li>
                     </ul>
                 </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">NEO4J <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="{{ urlFor('neo.index') }}">Neo4J Status</a></li>
+                        <li><a href="{{ urlFor('neo.places') }}">Load Places</a></li>
+                        <li><a href="{{ urlFor('neo.people') }}">Load People</a></li>
+                        <li><a href="{{ urlFor('neo.peopleplaces') }}">People To Places</a></li>
+                        <li><a href="{{ urlFor('neo.relatepeople') }}">Relate People</a></li>
+                    </ul>
+                </li>
+
             </ul>
         </div>
         <!--/.nav-collapse -->
