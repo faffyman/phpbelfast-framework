@@ -5,7 +5,8 @@
         "fzaninotto/faker": "1.*",
         "twig/twig": "1.*",
         "twig/extensions": "1.*",
-        "illuminate/database": "*"
+        "illuminate/database": "*",
+        "neoxygen/neoclient": "~2.1"
     },
     "autoload": {
         "psr-4": {
