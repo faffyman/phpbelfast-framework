@@ -63,7 +63,70 @@ class GraphDBController extends BaseController {
      * create some places
      * City, Country, County
      */
-    public function places() {
+    public function loadplaces() {
+
+        $aPlaces = array(
+            'Belfast' => array('type' => 'City', 'capital' => True),
+            'Alicante' => array('type' => 'City', 'country' => 'Spain'),
+            'Amsterdam' => array('type' => 'City', 'capital' => False, 'country' => 'Netherlands'),
+            'Barcelona' => array('type' => 'City', 'country' => 'Spain'),
+            'Birmingham' => array('type' => 'City', 'country' => 'England'),
+            'Bordeaux' => array('type' => 'City', 'country' => 'France'),
+            'Bristol' => array('type' => 'City', 'country' => 'England'),
+            'Edinburgh' => array('type' => 'City', 'country' => 'Scotland', 'capital' => 'True'),
+            'Faro' => array('type' => 'City', 'country' => 'Portugal'),
+            'Geneva' => array('type' => 'City', 'country' => 'Switzerland'),
+            'Glasgow' => array('type' => 'City', 'country' => 'Scotland'),
+            'Ibiza' => array('type' => 'City', 'country' => 'Spain'),
+            'Jersey' => array('type' => 'City', 'country' => 'Channel Islands'),
+            'Krakow' => array('type' => 'City', 'country' => 'Poland'),
+            'Liverpool' => array('type' => 'City', 'country' => 'England'),
+            'London' => array('type' => 'City', 'country' => 'England', 'capital' => 'True'),
+            'Majorca' => array('type' => 'City', 'country' => 'Spain'),
+            'Malaga' => array('type' => 'City', 'country' => 'Spain'),
+            'Malta' => array('type' => 'City', 'country' => 'Maltese Islands'),
+            'Manchester' => array('type' => 'City', 'country' => 'England'),
+            'Newcastle' => array('type' => 'City', 'country' => 'England'),
+            'Nice' => array('type' => 'City', 'country' => 'France'),
+            'Paris' => array('type' => 'City', 'country' => 'France', 'capital' => 'True'),
+            'Reykjavik' => array('type' => 'City', 'country' => 'Iceland', 'capital' => 'True'),
+            'Split' => array('type' => 'City', 'country' => 'Croatia'),
+            'Dubrovnik' => array('type' => 'City', 'country' => 'Croatia'),
+
+        );
+
+
+        foreach($aPlaces as $k=> $aPlace) {
+            $query = "CREATE (".str_replace(' ','_',strtolower($k)).":Place { name:'" . $k . "'";
+                foreach($aPlace as $property => $value) {
+                    $query.= ',' . strtolower($property) .":'" . $value ."'" ;
+                }
+            $query .= "}) ";
+            $this->neo->sendCypherQuery($query);
+        }
+
+        // finish with rendering the query
+        $this->view->set('query', $query);
+        $this->app->render('neo4j/loadplaces.twig');
+
+
+    }
+
+
+
+    /**
+     * List Places in the Graph
+     * @param $placename
+     */
+    public function places($placename ='') {
+
+        //find a list of places
+        $query = "MATCH (p:Place ".( !empty($placename) ? "{name: '".$placename."'}" : '' ).") RETURN p LIMIT 100";
+
+        $result = $this->neo->sendCypherQuery($query)->getRows();;
+
+        $this->view->set('places', $result['p']);
+        $this->app->render('neo4j/places.twig');
 
     }
 

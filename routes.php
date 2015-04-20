@@ -34,6 +34,8 @@ $app->group('/neo4j', function() use ($app){
 
     $app->get('/places','\PhpBelfast\Controllers\GraphDBController:places')
         ->name('neo.places');
+    $app->get('/places/load','\PhpBelfast\Controllers\GraphDBController:loadplaces')
+        ->name('neo.loadplaces');
 
     $app->get('/people','\PhpBelfast\Controllers\GraphDBController:people')
         ->name('neo.people');

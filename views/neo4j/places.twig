@@ -1,0 +1,23 @@
+{% extends "layout.twig" %}
+{% block header %}
+    <h1 class="text-center">NEO4J - Place Nodes</h1>
+    <hr/>
+
+{% endblock %}
+
+{% block content %}
+
+    <h2>Places</h2>
+
+
+    {% for place in places %}
+        <div class="col-sm-3 col-sm-offset-1 left" style="background:  {% if place.capital==True %}darkseagreen; border: solid 2px darkslategray; {% else %}peachpuff;  border:solid 2px maroon;{% endif %} border-radius: 100%; min-height:100px; margin: 10px; text-align:center; padding:30px;">
+            <h5>{{ place.name }} </h5>
+            <p>{{ place.type }}<br />{{ place.country }}
+
+            </p>
+        </div>
+    {% endfor %}
+
+
+{% endblock %}
