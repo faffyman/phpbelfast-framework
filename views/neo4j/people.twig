@@ -1,0 +1,24 @@
+{% extends "layout.twig" %}
+{% block header %}
+    <h1 class="text-center">NEO4J - People Nodes</h1>
+    <hr/>
+
+{% endblock %}
+
+{% block content %}
+
+<h2>People</h2>
+
+
+        {% for person in people %}
+            <div class="col-sm-3 col-sm-offset-1 left" style="background:  {% if person.type=='Hero' %}darkseagreen; border: solid 2px darkslategray; {% else %}peachpuff;  border:solid 2px maroon;{% endif %} border-radius: 100%; min-height:100px; margin: 10px; text-align:center; padding:30px;">
+            <h5>{{ person.name }} </h5>
+            <p>{{ person.type }}  born {{ person.dob }}
+            {% if person.type=='Hero' %}<br /><span style=color:#228822;">Alter Ego:</span> {{ person.real_name }}{% endif %}
+                {% if person.type=='Villain' %}<br /> Catchphrase: '<em>{{ person.catchphrase }}</em>'{% endif %}
+            </p>
+            </div>
+        {% endfor %}
+
+
+{% endblock %}

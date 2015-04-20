@@ -31,6 +31,7 @@ class GraphDBController extends BaseController {
         
         $this->neo =  ClientBuilder::create()
                             ->addConnection('default','http','10.0.2.2',7474,true,'neo4j','')
+                            ->setAutoFormatResponse(true) // REQUIRED FOR getResult() and getRows() functions !
                             ->build();
 
         $this->neo_version = $this->neo->getNeoClientVersion();
@@ -68,13 +69,33 @@ class GraphDBController extends BaseController {
 
 
     /**
-     * create some random people
+     * @param int $nLimit
      */
-    public function people($nPeople = 25) {
+    public function people( $nLimit = 200 ) {
+
+        // Find people
+        $query = "MATCH (p:Person) RETURN p LIMIT { limit } " ;
+        // Send the query
+        $result = $this->neo->sendCypherQuery($query,array('limit' => $nLimit));
+
+        $res  = $result->getRows();
+
+        $this->view->set('query',$query);
+        $this->view->set('people', $res['p']);
+
+        $this->app->render('neo4j/people.twig');
+    }
+
+
+    /**
+     * create some random people
+     * @param $num int
+     */
+    public function createpeople($num = 25) {
 
         $aPersonType = ['Hero','Villain','Civilian','Sidekick'];
 
-        foreach (range(1, $nPeople) as $idx) {
+        foreach (range(1, $num) as $idx) {
             $person = new \stdClass();
 
             $person->type = $this->faker->randomElement($aPersonType);
@@ -93,6 +114,11 @@ class GraphDBController extends BaseController {
 //            echo $query.'<br />';
 
             $result = $this->neo->sendCypherQuery($query);
+
+            $this->view->set('query',$query);
+
+            $this->app->render('neo4j/people-create.twig');
+
 
         }
 

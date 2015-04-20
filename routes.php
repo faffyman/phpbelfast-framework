@@ -38,6 +38,10 @@ $app->group('/neo4j', function() use ($app){
     $app->get('/people','\PhpBelfast\Controllers\GraphDBController:people')
         ->name('neo.people');
 
+    $app->get('/people/:num','\PhpBelfast\Controllers\GraphDBController:createpeople')
+        ->conditions(['num' => '[0-9]+'])
+        ->name('neo.createpeople');
+
     $app->get('/peopltoplaces','\PhpBelfast\Controllers\GraphDBController:peopletoplaces')
         ->name('neo.peopleplaces');
 
