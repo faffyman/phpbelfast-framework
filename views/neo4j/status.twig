@@ -6,7 +6,15 @@
 {% endblock %}
 
 {% block content %}
-    <div class="col-sm-8 col-sm-offset-2">
+    <h2>Node Types</h2>
+    <div class="col-sm-11 col-sm-offset-1">
+        {% for label in labels %}
+            {{ label }}&nbsp;-|-&nbsp;
+        {% endfor %}
+    </div>
+
+    <h2>Relationships</h2>
+    <div class="col-sm-8 col-sm-offset-1">
         <table width="90%">
             <tr>
                 <th width="33%">This</th>
@@ -29,5 +37,9 @@
 
         </table>
     </div>
+
+<br /><br /><br /><br /><br />
+
+
 {% endblock %}
 
