@@ -42,7 +42,8 @@ $app->group('/neo4j', function() use ($app){
 
     $app->get('/people/:num','\PhpBelfast\Controllers\GraphDBController:createpeople')
         ->conditions(['num' => '[0-9]+'])
-        ->name('neo.createpeople');
+        ->name('neo.createpeople')
+        ->setDefaultConditions(['num' => 25]);
 
     $app->get('/peopletoplaces','\PhpBelfast\Controllers\GraphDBController:peopletoplaces')
         ->name('neo.peopleplaces');
@@ -50,9 +51,12 @@ $app->group('/neo4j', function() use ($app){
     $app->get('/relatepeople','\PhpBelfast\Controllers\GraphDBController:relatepeople')
         ->name('neo.relatepeople');
 
+    $app->get('/people/shortest','\PhpBelfast\Controllers\GraphDBController:shortestPath')
+        ->name('neo.shortest');
 
     $app->get('/people/:name','\PhpBelfast\Controllers\GraphDBController:person')
         ->name('neo.person');
+
 
 });
 
