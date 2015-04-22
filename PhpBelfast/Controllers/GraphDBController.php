@@ -30,7 +30,7 @@ class GraphDBController extends BaseController {
         parent::__construct();
         
         $this->neo =  ClientBuilder::create()
-                            ->addConnection('default','http','10.0.2.2',7474,true,'neo4j','')
+                            ->addConnection('default','http','10.0.2.2',7474,true,'neo4j','demo')
                             ->setAutoFormatResponse(true) // REQUIRED FOR getResult() and getRows() functions !
                             ->build();
 
@@ -322,11 +322,37 @@ class GraphDBController extends BaseController {
         echo "Shortest route from ".  $person->getProperty('name') ." TO " . $place->getProperty('name') . " is via ";
 
         
-        $r = $this->neo->sendCypherQuery($shortestquery)->getResult();
-        echo "<pre>";
-        print_r($r);
-        echo "</pre>";
-        
+        $r = $this->neo->sendCypherQuery($shortestquery);
+
+	    $pathresult = $r->getResult();
+
+
+	    $response = $this->neo->getResponse();
+	    $body =  $response->getBody() ;
+	    $aGraph = $body['results'][0]['data'][0]['graph'];
+	    $aSteps = $body['results'][0]['data'][0]['rest'];
+
+
+        $this->view->set('steps', $aSteps[0]);
+	    $this->view->set('graph', $aGraph);
+
+
+
+	    echo '<pre>';
+	    print_r($aSteps);
+	    echo '<hr style="width:20px"/>';
+
+	    print_r($response);
+
+	    $pathnodes = $pathresult->getNodes();
+  	    $pathrelationships = $pathresult->getRelationships();
+
+
+	    echo '</pre>';
+
+
+
+
     }
 
 
