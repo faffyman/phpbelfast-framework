@@ -1,0 +1,28 @@
+{% extends "layout.twig" %}
+{% block header %}
+
+    <h1 class="text-center">Node Details</h1>
+    <hr/>
+{% endblock %}
+
+
+{% block content %}
+
+
+    <h2>Person</h2>
+    <h3>{{ personDetails.name }}</h3>
+    <p>is a {{ personDetails.type }}</p>
+    <p>Born: {{ personDetails.dob }}</p>
+    {% if personDetails.real_name %}<p>Has the real name: {{  personDetails.real_name }}</p>{% endif %}
+    {% if personDetails.catchphrase %}<p>Catchphrase: "<em>{{  personDetails.catchphrase }}</em>"</p>{% endif %}
+
+    <h3>Cities this villain Lives In</h3>
+    {% for city in cities %}
+    <h3>{{ city.getEndNode().getProperty('name') }}</h3>
+
+
+            <p>in {{ city.getEndNode().getProperty('country')  }}</p>
+
+    {% endfor %}
+
+{% endblock %}

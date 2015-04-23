@@ -226,7 +226,7 @@ class GraphDBController extends BaseController {
             foreach($places as $place) {
                 $sRelationship = $this->faker->randomElement($aRelationships);
 
-                $setquery = "MATCH (p:Person {name:'" . $neoNode->getProperty('name') . "'}),(place:Place { name:'".$place['name']."' })
+                $setquery = "MATCH (p:Person {name:'" . addcslashes($neoNode->getProperty('name'),"'") . "'}),(place:Place { name:'".$place['name']."' })
                              WHERE id(p)= " . $neoNode->getID() . "
                              CREATE (p)-[:" . $sRelationship . "]->(place)";
                 //echo '<br />'.$setquery;
@@ -288,11 +288,29 @@ class GraphDBController extends BaseController {
     /**
      * Find a person and list some information about them.
      * Who/What are they related to
-     * @param $name name of person to find.
+
      */
-    public function person($name) {
+    public function person() {
+
+        $query = 'MATCH (a:Person {type:"Villain"})-[r:LIVES_IN]-(b:Place) RETURN *, rand() as o ORDER BY o ';
+        $this->neo->sendCypherQuery($query);
+
+        // Getting the graph Result
+        $result = $this->neo->getResult();
+
+        //get a PERSON
+        $person = $result->getSingleNode('Person');
+
+        // get that persons details
+        $personDetails = $person->getProperties();
+
+        //get Relationships
+        $cities = $person->getRelationships('LIVES_IN', 'OUT');
 
 
+        $this->view->set('cities',$cities);
+        $this->view->set('personDetails',$personDetails);
+        $this->app->render('neo4j/person.twig');
 
     }
 
@@ -308,9 +326,12 @@ class GraphDBController extends BaseController {
         $person = $result->getNodes(array('label' => 'Person') );
         $place = $result->getNodes(array('label' => 'Place') );
 
-        
         $person = $person['Person'][0];
         $place = $place['Place'][0];
+
+
+        $this->view->set('person',$person);
+        $this->view->set('place',$place);
 
         // The shortest path function
         $shortestquery = "MATCH (a:Person { name:'". $person->getProperty('name')."'}),
@@ -318,37 +339,49 @@ class GraphDBController extends BaseController {
                             p = shortestPath((a)-[*..15]-(b))
                           RETURN p";
 
-
-        echo "Shortest route from ".  $person->getProperty('name') ." TO " . $place->getProperty('name') . " is via ";
-
         
         $r = $this->neo->sendCypherQuery($shortestquery);
 
 	    $pathresult = $r->getResult();
+        $this->view->set('pathresult', $pathresult);
 
-
-	    $response = $this->neo->getResponse();
-	    $body =  $response->getBody() ;
-	    $aGraph = $body['results'][0]['data'][0]['graph'];
-	    $aSteps = $body['results'][0]['data'][0]['rest'];
-
-
-        $this->view->set('steps', $aSteps[0]);
-	    $this->view->set('graph', $aGraph);
+        $pathrelationships = $pathresult->getRelationships();
 
 
 
-	    echo '<pre>';
-	    print_r($aSteps);
-	    echo '<hr style="width:20px"/>';
+        $response = $this->neo->getResponse();
+        $body =  $response->getBody() ;
 
-	    print_r($response);
-
-	    $pathnodes = $pathresult->getNodes();
-  	    $pathrelationships = $pathresult->getRelationships();
+        $aSteps = $body['results'][0]['data'][0]['rest'];
 
 
-	    echo '</pre>';
+        $rows = $r->getRows();
+        $rcounter = 0;
+        foreach($rows['p'][0] as $k => &$step) {
+
+            if (empty($step) && is_array($step)) {
+                // it's a relationship - need panel and direction
+                $direction = $aSteps[0]['directions'][$rcounter];
+                $relate = $aSteps[0]['relationships'][$rcounter];
+
+                $arelate = explode('/',$relate);
+                $relateid = array_pop($arelate);
+
+                $relationshipObj = $pathrelationships[$relateid];
+                $rows['p'][0][$k-1]['related'] = $relationshipObj->getType();
+                $step = array('type'=>'Relationship','related' =>$relationshipObj->getType(), 'direction'=>$direction);
+
+                $rcounter++;
+            }
+        }
+
+
+
+        $this->view->set('path', $rows['p'][0]);
+        $this->view->set('length', $aSteps[0]['length']);
+
+
+        $this->app->render('neo4j/shortest-path.twig');
 
 
 

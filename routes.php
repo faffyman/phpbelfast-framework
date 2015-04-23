@@ -54,7 +54,7 @@ $app->group('/neo4j', function() use ($app){
     $app->get('/people/shortest','\PhpBelfast\Controllers\GraphDBController:shortestPath')
         ->name('neo.shortest');
 
-    $app->get('/people/:name','\PhpBelfast\Controllers\GraphDBController:person')
+    $app->get('/person','\PhpBelfast\Controllers\GraphDBController:person')
         ->name('neo.person');
 
 

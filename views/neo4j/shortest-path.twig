@@ -1,0 +1,36 @@
+{% extends "layout.twig" %}
+{% block header %}
+    <h1 class="text-center">Shortest Path</h1>
+    <hr/>
+
+{% endblock %}
+
+{% block content %}
+
+    <h2>Shortest path from {{ person.getProperty('name') }} to {{ place.getProperty('name') }} is {{ length }} nodes</h2>
+
+
+
+    <div style="font-size: 2em; line-height:2;">
+    {% for n in path %}
+
+        {% if n is defined and n is not null %}
+
+            {% if n.type != "Relationship" %}
+                <span style="font-weight:bold; color: #880000: display: inline-block; padding: 10px 20px; background:{% if n['type']=='Place' %}#008800{% else %}#F5F5Dc{% endif %}; border:solid 1px #880000; border-radius:100%;">{{ n['name'] }}</span>
+            {% else %}
+                {% if n['direction'] == '<-' %}
+                    <--<span style="color:#38cc38;">{{ n['related'] }}</span>{% if not loop.last %}<--{% endif %}
+                {% else %}
+                    --><span style="color:#cc3838;">{{ n['related'] }}</span>{% if not loop.last %}-->{% endif %}
+                {% endif %}
+            {% endif %}
+
+        {% endif %}
+
+
+    {% endfor  %}
+
+    </div>
+
+{% endblock %}
